@@ -29,10 +29,20 @@ run, with no input, no clock, no randomness and no network.
 import os
 import sys
 
-# The word. Chosen once, fixed forever — the entry is the word itself.
+# Why "almost" is the funniest, most painfully honest word an ex would use:
+# it is not an insult and not a compliment — it is the shrug that ends the
+# story. "Almost" says the relationship was real enough to count and not
+# enough to last, which is exactly the verdict an ex delivers in one word.
+# Any harsher word would sound bitter; any kinder word would sound like a
+# lie. "Almost" is the only word where the joke and the truth are the same.
 WORD = "almost"
 
 # The gate: 1–24 UTF-8 characters, not only whitespace, exactly one word.
+# The lower bound (1) rules out an empty or whitespace-only entry, which
+# would say nothing at all; the upper bound (24) is the competition's cap,
+# and "almost" at 6 characters sits comfortably inside it — short enough
+# to land as a single punchline, long enough to carry the whole story.
+MIN_CHARS = 1
 MAX_CHARS = 24
 
 
@@ -41,12 +51,18 @@ def choose_word() -> str:
     word = WORD.strip()
     if not word:
         raise ValueError("entry word must not be empty")
+    if len(word) < MIN_CHARS:
+        raise ValueError(
+            f"entry word is {len(word)} characters, under the {MIN_CHARS} minimum"
+        )
     if len(word) > MAX_CHARS:
         raise ValueError(
             f"entry word is {len(word)} characters, over the {MAX_CHARS} limit"
         )
     if len(word.split()) != 1:
         raise ValueError("entry must be exactly one word")
+    if not word.isalpha():
+        raise ValueError("entry word must be plain letters, no punctuation")
     return word
 
 
